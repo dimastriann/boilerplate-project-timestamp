@@ -24,6 +24,37 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get('/api', (req, res) => {
+  return res.json({
+    unix: new Date().getTime(),
+    utc: new Date().toUTCString()
+  })
+})
+
+app.get("/api/:date", (req, res) => {
+  // console.log(req.params)
+  const { date } = req.params;
+  
+  let paramsDate = date
+  if(/\d{4}-\d{2}-\d{2}/.test(date)){
+    paramsDate = date
+  } else if(/\d{13}/.test(date)) {
+    paramsDate = Number(date)
+  }
+  
+  const newDate = new Date(paramsDate)
+  const ms = newDate.getTime()
+  
+  if(newDate.toString() == "Invalid Date") {
+    return res.json({error: "Invalid Date"});
+  }
+
+  res.json({
+    unix: ms,
+    utc: newDate.toUTCString()
+  })
+})
+
 
 
 // listen for requests :)
